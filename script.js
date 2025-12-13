@@ -90,7 +90,7 @@ orderForm.addEventListener("submit", async (e) => {
 
   try {
     await fetch(
-      "https://script.google.com/macros/s/AKfycbzqP_iQzYNC68RFfSLHHPqWJv3GLjbEQmWP8rkG97Pp6zxR-R65or2JUuSk0QR6TD3x/exec",
+      "https://script.google.com/macros/s/AKfycbxIk17GbpOjT4b6Wo1oHoHnqr3GwQp9WXOfNNa2u9y_61-ftMADRxNSnu3yPQT-vYaw/exec",
       {
         method: "POST",
         body: fd
@@ -121,3 +121,4 @@ orderForm.addEventListener("submit", async (e) => {
 
   location.href = "thank-you.html";
 });
+

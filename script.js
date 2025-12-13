@@ -72,7 +72,7 @@ orderForm.addEventListener("submit", async (e) => {
 
   try {
     await fetch(
-      "https://script.google.com/macros/s/AKfycbxwMk6JeJwveXvkFKeJLzJd3fpBT6tvlaYxtKaxLU1VrjcIUODamlBnzHd_dIkWT1-q/exec",
+      "https://script.google.com/macros/s/AKfycbxCWdhl5dUe2iDRo1WjcJ3F1vCvc9KEpmL_wRoGu9w0sDfh7D19ILj76YlkusYIESLSFQ/exec",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -106,4 +106,5 @@ orderForm.addEventListener("submit", async (e) => {
     spinner.style.display = "none";
   }
 });
+
 

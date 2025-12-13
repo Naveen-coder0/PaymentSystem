@@ -58,7 +58,7 @@ screenshotInput.addEventListener("change", () => {
 });
 
 /* ===== SUBMIT ===== */
-orderForm.addEventListener("submit", (e) => {
+orderForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const file = screenshotInput.files[0];
@@ -70,50 +70,54 @@ orderForm.addEventListener("submit", (e) => {
   payBtn.disabled = true;
   spinner.style.display = "block";
 
-  const reader = new FileReader();
+  /* ===== FORM DATA (CORRECT WAY) ===== */
+  const fd = new FormData();
 
-  reader.onload = async () => {
-    const base64 = reader.result.split(",")[1];
+  // customer info
+  fd.append("name", orderForm.name.value);
+  fd.append("email", orderForm.email.value);
+  fd.append("phone", orderForm.phone.value);
+  fd.append("address", orderForm.address.value);
 
-    const payload = {
-      name: orderForm.name.value,
-      email: orderForm.email.value,
-      phone: orderForm.phone.value,
-      address: orderForm.address.value,
-      product,
-      amount: total,
-      quantity: qty,
-      size,
-      screenshotBase64: base64
-    };
+  // order info
+  fd.append("product", product);
+  fd.append("amount", total);
+  fd.append("quantity", qty);
+  fd.append("size", size);
 
+  // screenshot
+  fd.append("screenshot", file);
+
+  try {
     await fetch(
       "https://script.google.com/macros/s/AKfycbzqP_iQzYNC68RFfSLHHPqWJv3GLjbEQmWP8rkG97Pp6zxR-R65or2JUuSk0QR6TD3x/exec",
       {
         method: "POST",
-        body: JSON.stringify(payload)
+        body: fd
       }
     );
+  } catch (err) {
+    alert("Upload failed. Please try again.");
+    payBtn.disabled = false;
+    spinner.style.display = "none";
+    return;
+  }
 
-    /* ===== INVOICE ===== */
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF();
+  /* ===== INVOICE ===== */
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF();
 
-    pdf.setFontSize(18);
-    pdf.text("STRIDE - Payment Invoice", 20, 20);
+  pdf.setFontSize(18);
+  pdf.text("STRIDE - Payment Invoice", 20, 20);
 
-    pdf.setFontSize(12);
-    pdf.text(`Product: ${product}`, 20, 40);
-    pdf.text(`Size: ${size}`, 20, 50);
-    pdf.text(`Quantity: ${qty}`, 20, 60);
-    pdf.text(`Total Paid: ₹${total}`, 20, 70);
-    pdf.text("Status: Under Verification", 20, 85);
+  pdf.setFontSize(12);
+  pdf.text(`Product: ${product}`, 20, 40);
+  pdf.text(`Size: ${size}`, 20, 50);
+  pdf.text(`Quantity: ${qty}`, 20, 60);
+  pdf.text(`Total Paid: ₹${total}`, 20, 70);
+  pdf.text("Status: Under Verification", 20, 85);
 
-    pdf.save(`STRIDE-Invoice-${Date.now()}.pdf`);
+  pdf.save(`STRIDE-Invoice-${Date.now()}.pdf`);
 
-    location.href = "thank-you.html";
-  };
-
-  reader.readAsDataURL(file);
+  location.href = "thank-you.html";
 });
-

@@ -191,7 +191,7 @@ sizeEl.innerText=size;
 
 /* UPI */
 const UPI="946726972@ptyes";
-const PAYEE="STRIDE";
+const PAYEE="Naveen Maan";
 const upi=`upi://pay?pa=${UPI}&pn=${encodeURIComponent(PAYEE)}&am=${price}&cu=INR`;
 
 upiQR.src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data="+encodeURIComponent(upi);

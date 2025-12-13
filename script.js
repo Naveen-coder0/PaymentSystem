@@ -49,38 +49,28 @@ upiPhonePe.href = `phonepe://pay?pa=${UPI}&pn=${encodeURIComponent(PAYEE)}&am=${
 orderForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const transactionId = orderForm.transactionId.value.trim();
-  if (!transactionId) {
-    alert("Please enter UPI Transaction ID (UTR)");
-    return;
-  }
+  const fd = new FormData(orderForm);
+
+  fd.append("product", product);
+  fd.append("size", size);
+  fd.append("quantity", qty);
+  fd.append("amount", total);
+  fd.append("transactionId", orderForm.transactionId.value);
 
   payBtn.disabled = true;
   spinner.style.display = "block";
 
-  const payload = {
-    name: orderForm.name.value,
-    email: orderForm.email.value,
-    phone: orderForm.phone.value,
-    address: orderForm.address.value,
-    product,
-    amount: total,
-    quantity: qty,
-    size,
-    transactionId
-  };
-
   try {
     await fetch(
-      "https://script.google.com/macros/s/AKfycbxCWdhl5dUe2iDRo1WjcJ3F1vCvc9KEpmL_wRoGu9w0sDfh7D19ILj76YlkusYIESLSFQ/exec",
+      "https://script.google.com/macros/s/AKfycbzqP_iQzYNC68RFfSLHHPqWJv3GLjbEQmWP8rkG97Pp6zxR-R65or2JUuSk0QR6TD3x/exec",
       {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
+        body: fd,
+        mode: "no-cors"
       }
     );
 
-    /* ===== INVOICE ===== */
+    // Invoice
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF();
 
@@ -92,19 +82,18 @@ orderForm.addEventListener("submit", async (e) => {
     pdf.text(`Size: ${size}`, 20, 50);
     pdf.text(`Quantity: ${qty}`, 20, 60);
     pdf.text(`Total Paid: ₹${total}`, 20, 70);
-    pdf.text(`Transaction ID: ${transactionId}`, 20, 80);
+    pdf.text(`Transaction ID: ${orderForm.transactionId.value}`, 20, 80);
     pdf.text("Status: Under Verification", 20, 95);
 
     pdf.save(`STRIDE-Invoice-${Date.now()}.pdf`);
 
-    window.location.href = "thank-you.html";
+    location.href = "thank-you.html";
 
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
     alert("Payment submission failed. Try again.");
-    payBtn.disabled = false;
-    spinner.style.display = "none";
+    console.error(err);
   }
 });
+
 
 

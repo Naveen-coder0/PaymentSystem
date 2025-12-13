@@ -30,11 +30,13 @@
     Size: <b id="size"></b> | Quantity: <b id="qty"></b>
   </div>
 
+  <!-- QR -->
   <div class="qr-box">
-    <a id="upiLink"><img id="upiQR"></a>
+    <a id="upiLink"><img id="upiQR" alt="UPI QR Code"></a>
     <p class="qr-text">Tap or scan with any UPI app</p>
   </div>
 
+  <!-- UPI Buttons -->
   <div class="upi-buttons">
     <a id="upiAny">Any UPI</a>
     <a id="upiGpay">GPay</a>
@@ -42,17 +44,22 @@
   </div>
 
   <div class="info">
-    Complete payment and upload screenshot below.
+    After completing payment, enter your UPI Transaction ID (UTR) below.
   </div>
 
+  <!-- FORM -->
   <form id="orderForm">
     <input name="name" placeholder="Full Name" required>
     <input name="email" type="email" placeholder="Email Address" required>
     <input name="phone" placeholder="Mobile Number" required>
     <textarea name="address" rows="3" placeholder="Complete Address" required></textarea>
 
-    <input type="file" name="screenshot" id="screenshot" accept="image/*" capture="environment" required>
-    <div class="preview" id="preview"></div>
+    <!-- TRANSACTION ID -->
+    <input
+      name="transactionId"
+      placeholder="UPI Transaction ID (UTR)"
+      required
+    >
 
     <button id="payBtn" type="submit">I Have Paid</button>
     <div class="spinner" id="spinner">Submitting payment… please wait</div>
@@ -60,7 +67,9 @@
 </div>
 
 <div class="disclaimer">
-  • Manual verification • Screenshot required • Order ships after confirmation
+  • Manual verification  
+  • Enter correct UTR to avoid delays  
+  • Order ships after confirmation
 </div>
 
 <div class="support">

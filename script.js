@@ -86,40 +86,59 @@ orderForm.addEventListener("submit", async (e) => {
   fd.append("size", size);
 
   // screenshot
-  fd.append("screenshot", file);
+/* ===== SUBMIT ===== */
+orderForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const file = screenshotInput.files[0];
+  if (!file) {
+    alert("Please upload payment screenshot");
+    return;
+  }
+
+  payBtn.disabled = true;
+  spinner.style.display = "block";
+
+  const fd = new FormData(orderForm);
+
+  fd.append("product", product);
+  fd.append("amount", total);
+  fd.append("quantity", qty);
+  fd.append("size", size);
 
   try {
     await fetch(
-      "https://script.google.com/macros/s/AKfycbybOw2rejI6CFJ2JGsGCLrc0a5aFk9-ay2Gyew1RwaNCPgCyQZxKudRt5QWdBCeCRljXw/exec",
+      "https://script.google.com/macros/s/AKfycbzqP_iQzYNC68RFfSLHHPqWJv3GLjbEQmWP8rkG97Pp6zxR-R65or2JUuSk0QR6TD3x/exec",
       {
         method: "POST",
         body: fd
       }
     );
+
+    /* ===== INVOICE ===== */
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF();
+
+    pdf.setFontSize(18);
+    pdf.text("STRIDE - Payment Invoice", 20, 20);
+
+    pdf.setFontSize(12);
+    pdf.text(`Product: ${product}`, 20, 40);
+    pdf.text(`Size: ${size}`, 20, 50);
+    pdf.text(`Quantity: ${qty}`, 20, 60);
+    pdf.text(`Total Paid: ₹${total}`, 20, 70);
+    pdf.text("Status: Under Verification", 20, 85);
+
+    pdf.save(`STRIDE-Invoice-${Date.now()}.pdf`);
+
+    location.href = "thank-you.html";
+
   } catch (err) {
-    alert("Upload failed. Please try again.");
-    payBtn.disabled = false;
-    spinner.style.display = "none";
-    return;
+    alert("Submission failed. Please try again.");
+    console.error(err);
   }
-
-  /* ===== INVOICE ===== */
-  const { jsPDF } = window.jspdf;
-  const pdf = new jsPDF();
-
-  pdf.setFontSize(18);
-  pdf.text("STRIDE - Payment Invoice", 20, 20);
-
-  pdf.setFontSize(12);
-  pdf.text(`Product: ${product}`, 20, 40);
-  pdf.text(`Size: ${size}`, 20, 50);
-  pdf.text(`Quantity: ${qty}`, 20, 60);
-  pdf.text(`Total Paid: ₹${total}`, 20, 70);
-  pdf.text("Status: Under Verification", 20, 85);
-
-  pdf.save(`STRIDE-Invoice-${Date.now()}.pdf`);
-
-  location.href = "thank-you.html";
 });
+
+
 
 

@@ -19,27 +19,16 @@ body{
   background:#0f0f0f;
   color:#fff;
 }
-.navbar{
-  background:#121212;
-  padding:16px 20px;
-}
-.logo{
-  font-size:24px;
-  font-weight:700;
-  letter-spacing:3px;
-}
+.navbar{background:#121212;padding:16px 20px}
+.logo{font-size:24px;font-weight:700;letter-spacing:3px}
 .logo span{color:#ff5722}
 
-.container{
-  max-width:460px;
-  margin:30px auto;
-  padding:0 15px;
-}
+.container{max-width:460px;margin:30px auto;padding:0 15px}
 .card{
   background:#1c1c1c;
   padding:24px;
   border-radius:16px;
-  box-shadow:0 10px 30px rgba(0,0,0,.8);
+  box-shadow:0 10px 30px rgba(0,0,0,.8)
 }
 .price{color:#4caf50;font-weight:600;margin:8px 0}
 .meta{font-size:13px;color:#aaa;margin-bottom:14px}
@@ -48,15 +37,11 @@ body{
   border:1px dashed #333;
   padding:16px;
   border-radius:12px;
-  text-align:center;
+  text-align:center
 }
 .qr-box img{max-width:260px;width:100%}
 
-.upi-buttons{
-  display:flex;
-  gap:10px;
-  margin:14px 0;
-}
+.upi-buttons{display:flex;gap:10px;margin:14px 0}
 .upi-buttons a{
   flex:1;
   padding:10px;
@@ -65,7 +50,7 @@ body{
   text-align:center;
   font-size:13px;
   text-decoration:none;
-  color:#fff;
+  color:#fff
 }
 .upi-buttons a:hover{background:#333}
 
@@ -76,9 +61,8 @@ input,textarea{
   border-radius:8px;
   border:1px solid #333;
   background:#111;
-  color:#fff;
+  color:#fff
 }
-
 button{
   width:100%;
   margin-top:16px;
@@ -89,7 +73,7 @@ button{
   color:#fff;
   font-size:16px;
   font-weight:600;
-  cursor:pointer;
+  cursor:pointer
 }
 
 .info,.disclaimer{
@@ -99,22 +83,12 @@ button{
   margin-top:16px;
   font-size:12.5px;
   border-radius:10px;
-  color:#ccc;
+  color:#ccc
 }
 .disclaimer{border-color:#ff9800}
 
-.footer{
-  text-align:center;
-  font-size:12px;
-  color:#666;
-  margin:20px 0;
-}
-.support{
-  text-align:center;
-  font-size:13px;
-  color:#aaa;
-  margin-top:15px;
-}
+.footer{text-align:center;font-size:12px;color:#666;margin:20px 0}
+.support{text-align:center;font-size:13px;color:#aaa;margin-top:15px}
 .support a{color:#ff5722;text-decoration:none}
 </style>
 </head>
@@ -154,7 +128,7 @@ button{
     <input name="email" type="email" placeholder="Email Address" required>
     <input name="phone" placeholder="Mobile Number" required>
     <textarea name="address" rows="3" placeholder="Complete Address" required></textarea>
-    <input type="file" name="screenshot" accept="image/*" required>
+    <input type="file" name="screenshot" accept="image/*" capture="environment" required>
     <button type="submit">I Have Paid</button>
   </form>
 </div>
@@ -174,96 +148,71 @@ button{
 <div class="footer">© 2025 STRIDE</div>
 
 <script>
-/* ===== URL PARAMS ===== */
-const p=new URLSearchParams(location.search);
-const product=p.get("name")||"Product";
-const price=p.get("price")||"0";
-const qty=p.get("qty")||"1";
-const size=p.get("size")||"-";
+/* ===== DOM ELEMENTS (FIX) ===== */
+const title = document.getElementById("title");
+const priceEl = document.getElementById("price");
+const qtyEl = document.getElementById("qty");
+const sizeEl = document.getElementById("size");
 
-title.innerText=product;
-priceEl.innerText="₹"+price;
-qtyEl.innerText=qty;
-sizeEl.innerText=size;
+const upiQR = document.getElementById("upiQR");
+const upiLink = document.getElementById("upiLink");
+const upiAny = document.getElementById("upiAny");
+const upiGpay = document.getElementById("upiGpay");
+const upiPhonePe = document.getElementById("upiPhonePe");
+
+const orderForm = document.getElementById("orderForm");
+
+/* ===== URL PARAMS ===== */
+const p = new URLSearchParams(location.search);
+const product = p.get("name") || "Product";
+const price = p.get("price") || "0";
+const qty = p.get("qty") || "1";
+const size = p.get("size") || "-";
+
+/* ===== DISPLAY ===== */
+title.innerText = product;
+priceEl.innerText = "₹" + price;
+qtyEl.innerText = qty;
+sizeEl.innerText = size;
 
 /* ===== UPI ===== */
-const UPI="naveenmaan@ptyes";
-const PAYEE="STRIDE Store";
-const upi=`upi://pay?pa=${UPI}&pn=${encodeURIComponent(PAYEE)}&am=${price}&cu=INR`;
+const UPI = "naveenmaan@ptyes";
+const PAYEE = "STRIDE Store";
+const upi = `upi://pay?pa=${UPI}&pn=${encodeURIComponent(PAYEE)}&am=${price}&cu=INR`;
 
-upiQR.src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data="+encodeURIComponent(upi);
-upiLink.href=upi;
-upiAny.href=upi;
-upiGpay.href=`tez://upi/pay?pa=${UPI}&pn=${encodeURIComponent(PAYEE)}&am=${price}&cu=INR`;
-upiPhonePe.href=`phonepe://pay?pa=${UPI}&pn=${encodeURIComponent(PAYEE)}&am=${price}&cu=INR`;
+upiQR.src =
+  "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" +
+  encodeURIComponent(upi);
+
+upiLink.href = upi;
+upiAny.href = upi;
+upiGpay.href = `tez://upi/pay?pa=${UPI}&pn=${encodeURIComponent(PAYEE)}&am=${price}&cu=INR`;
+upiPhonePe.href = `phonepe://pay?pa=${UPI}&pn=${encodeURIComponent(PAYEE)}&am=${price}&cu=INR`;
 
 /* ===== SUBMIT ===== */
-orderForm.addEventListener("submit",e=>{
+orderForm.addEventListener("submit", e => {
   e.preventDefault();
 
-  const fd=new FormData(orderForm);
-  fd.append("product",product);
-  fd.append("amount",price);
-  fd.append("quantity",qty);
-  fd.append("size",size);
+  const fd = new FormData(orderForm);
+  fd.append("product", product);
+  fd.append("amount", price);
+  fd.append("quantity", qty);
+  fd.append("size", size);
 
-  fetch("YOUR_GOOGLE_SCRIPT_URL",{
-    method:"POST",
-    body:fd
+  fetch("YOUR_GOOGLE_SCRIPT_URL", {
+    method: "POST",
+    body: fd
   });
 
-  /* ===== BEAUTIFUL INVOICE ===== */
-  const {jsPDF}=window.jspdf;
-  const pdf=new jsPDF();
-
-  pdf.setFillColor(15,15,15);
-  pdf.rect(0,0,210,40,"F");
-
-  pdf.setTextColor(255);
-  pdf.setFontSize(22);
-  pdf.setFont("helvetica","bold");
-  pdf.text("STRIDE",14,26);
-
-  pdf.setFontSize(10);
-  pdf.setFont("helvetica","normal");
-  pdf.text("Premium Footwear Store",14,33);
-  pdf.text(`Date: ${new Date().toLocaleDateString()}`,150,26);
-
-  pdf.setTextColor(0);
-  let y=55;
-  pdf.setFontSize(13);
-  pdf.setFont("helvetica","bold");
-  pdf.text("Customer Details",14,y);
-  pdf.line(14,y+2,196,y+2);
-
-  y+=12;
-  pdf.setFont("helvetica","normal");
-  pdf.setFontSize(11);
-  pdf.text(`Name: ${orderForm.name.value}`,14,y); y+=8;
-  pdf.text(`Email: ${orderForm.email.value}`,14,y); y+=8;
-  pdf.text(`Phone: ${orderForm.phone.value}`,14,y); y+=8;
-  pdf.text(`Address: ${orderForm.address.value}`,14,y);
-
-  y+=14;
-  pdf.setFont("helvetica","bold");
-  pdf.text("Order Summary",14,y);
-  pdf.line(14,y+2,196,y+2);
-
-  y+=12;
-  pdf.setFont("helvetica","normal");
-  pdf.text(`Product: ${product}`,14,y); y+=8;
-  pdf.text(`Size: ${size}`,14,y); y+=8;
-  pdf.text(`Quantity: ${qty}`,14,y); y+=8;
-  pdf.text(`Total Paid: ₹${price}`,14,y);
-
-  pdf.setFontSize(10);
-  pdf.setTextColor(120);
-  pdf.text("Status: Under Verification",14,275);
-  pdf.text("System generated invoice • STRIDE",14,282);
-
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF();
+  pdf.text("STRIDE - Invoice", 20, 20);
+  pdf.text(`Product: ${product}`, 20, 35);
+  pdf.text(`Total Paid: ₹${price}`, 20, 45);
+  pdf.text("Status: Under Verification", 20, 55);
   pdf.save(`STRIDE-Invoice-${Date.now()}.pdf`);
 
-  location.href="thank-you.html";
+  location.href = "thank-you.html";
 });
 </script>
 

@@ -108,7 +108,7 @@ orderForm.addEventListener("submit", async (e) => {
 
   try {
     await fetch(
-      "https://script.google.com/macros/s/AKfycbzqP_iQzYNC68RFfSLHHPqWJv3GLjbEQmWP8rkG97Pp6zxR-R65or2JUuSk0QR6TD3x/exec",
+      "https://script.google.com/macros/s/AKfycbyDuq3-8nGqSwOJKJPPLy4JFV_g3lNI_qxKtEVLL2OKIs2L3WG1PqbhwRXmSpH04ZfnEA/exec",
       {
         method: "POST",
         body: fd
@@ -138,6 +138,7 @@ orderForm.addEventListener("submit", async (e) => {
     console.error(err);
   }
 });
+
 
 
 

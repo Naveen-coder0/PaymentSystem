@@ -49,20 +49,30 @@ upiPhonePe.href = `phonepe://pay?pa=${UPI}&pn=${encodeURIComponent(PAYEE)}&am=${
 orderForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
+  const transactionInput = orderForm.querySelector(
+    'input[name="transactionId"]'
+  );
+
+  if (!transactionInput || !transactionInput.value.trim()) {
+    alert("Please enter UPI Transaction ID");
+    return;
+  }
+
   const fd = new FormData(orderForm);
 
+  // Order details
   fd.append("product", product);
   fd.append("size", size);
   fd.append("quantity", qty);
   fd.append("amount", total);
-  fd.append("transactionId", orderForm.transactionId.value);
+  fd.append("transactionId", transactionInput.value.trim());
 
   payBtn.disabled = true;
   spinner.style.display = "block";
 
   try {
     await fetch(
-      "https://script.google.com/macros/s/AKfycbzqP_iQzYNC68RFfSLHHPqWJv3GLjbEQmWP8rkG97Pp6zxR-R65or2JUuSk0QR6TD3x/exec",
+      "https://script.google.com/macros/s/AKfycbyN0m_iFNZe2r8pEHVvpmgykOCcl-o2f4WzrOWERC-s8SekZHmXsfCV-ea-HrF9WhUIkA/exec",
       {
         method: "POST",
         body: fd,
@@ -70,7 +80,7 @@ orderForm.addEventListener("submit", async (e) => {
       }
     );
 
-    // Invoice
+    /* ===== INVOICE ===== */
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF();
 
@@ -82,18 +92,17 @@ orderForm.addEventListener("submit", async (e) => {
     pdf.text(`Size: ${size}`, 20, 50);
     pdf.text(`Quantity: ${qty}`, 20, 60);
     pdf.text(`Total Paid: ₹${total}`, 20, 70);
-    pdf.text(`Transaction ID: ${orderForm.transactionId.value}`, 20, 80);
+    pdf.text(`Transaction ID: ${transactionInput.value}`, 20, 80);
     pdf.text("Status: Under Verification", 20, 95);
 
     pdf.save(`STRIDE-Invoice-${Date.now()}.pdf`);
 
-    location.href = "thank-you.html";
+    window.location.href = "thank-you.html";
 
   } catch (err) {
     alert("Payment submission failed. Try again.");
     console.error(err);
+    payBtn.disabled = false;
+    spinner.style.display = "none";
   }
 });
-
-
-

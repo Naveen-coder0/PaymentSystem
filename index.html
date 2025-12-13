@@ -145,6 +145,10 @@ button:hover{opacity:0.9}
 <div class="navbar">
   <div class="logo">Sudesh <span>Store</span></div>
 </div>
+<div class="meta">
+  Size: <b id="size">-</b> |
+  Quantity: <b id="qty">1</b>
+</div>
 
 <div class="container">
 
@@ -158,6 +162,7 @@ button:hover{opacity:0.9}
       </a>
       <p style="font-size:12px;color:#888">Tap QR or scan with your UPI app</p>
     </div>
+    
 
     <!-- UPI APP BUTTONS -->
     <div class="upi-buttons">
@@ -201,11 +206,32 @@ button:hover{opacity:0.9}
 
 <script>
 /* PRODUCT */
-const params=new URLSearchParams(window.location.search);
-const productName=params.get("name")||"Product";
-const amount=params.get("price")||"0";
-document.getElementById("title").innerText=productName;
-document.getElementById("price").innerText="₹"+amount;
+document.addEventListener("DOMContentLoaded", () => {
+
+  const title = document.getElementById("title");
+  const priceEl = document.getElementById("price");
+  const qtyEl = document.getElementById("qty");
+  const sizeEl = document.getElementById("size");
+
+  const params = new URLSearchParams(window.location.search);
+
+  const product = params.get("name") || "Product";
+  const price = Number(params.get("price") || 0);
+  const qty = Number(params.get("qty") || 1);
+  const size = params.get("size") || "-";
+
+  const total = price * qty;
+
+  // ✅ SHOW VALUES
+  title.innerText = product;
+  priceEl.innerText = `₹${total}`;
+  qtyEl.innerText = qty;
+  sizeEl.innerText = size;
+
+  console.log("PRODUCT:", product);
+  console.log("PRICE:", price);
+  console.log("QTY:", qty);
+  console.log("SIZE:", size);
 
 /* UPI */
 const UPI_ID="naveenmaan@fam";
@@ -265,4 +291,5 @@ document.getElementById("orderForm").addEventListener("submit",function(e){
 
 </body>
 </html>
+
 

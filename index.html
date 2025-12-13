@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Secure Checkout | STRIDE</title>
+
+<link rel="stylesheet" href="style.css">
+
+<!-- jsPDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<!-- Font -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<div class="navbar">
+  <div class="logo">STR<span>IDE</span></div>
+</div>
+
+<div class="container">
+
+<div class="card">
+  <h2 id="title"></h2>
+  <div class="price" id="totalPrice"></div>
+
+  <div class="meta">
+    Size: <b id="size"></b> | Quantity: <b id="qty"></b>
+  </div>
+
+  <div class="qr-box">
+    <a id="upiLink"><img id="upiQR"></a>
+    <p class="qr-text">Tap or scan with any UPI app</p>
+  </div>
+
+  <div class="upi-buttons">
+    <a id="upiAny">Any UPI</a>
+    <a id="upiGpay">GPay</a>
+    <a id="upiPhonePe">PhonePe</a>
+  </div>
+
+  <div class="info">
+    Complete payment and upload screenshot below.
+  </div>
+
+  <form id="orderForm">
+    <input name="name" placeholder="Full Name" required>
+    <input name="email" type="email" placeholder="Email Address" required>
+    <input name="phone" placeholder="Mobile Number" required>
+    <textarea name="address" rows="3" placeholder="Complete Address" required></textarea>
+
+    <input type="file" name="screenshot" id="screenshot" accept="image/*" capture="environment" required>
+    <div class="preview" id="preview"></div>
+
+    <button id="payBtn" type="submit">I Have Paid</button>
+    <div class="spinner" id="spinner">Submitting payment… please wait</div>
+  </form>
+</div>
+
+<div class="disclaimer">
+  • Manual verification • Screenshot required • Order ships after confirmation
+</div>
+
+<div class="support">
+  Need help? <a href="mailto:naveen.maan2006@gmail.com">naveen.maan2006@gmail.com</a>
+</div>
+
+</div>
+
+<div class="footer">© 2025 STRIDE</div>
+
+<script src="script.js"></script>
+</body>
+</html>

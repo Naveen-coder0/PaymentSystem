@@ -30,7 +30,7 @@ body{
   border-radius:16px;
   box-shadow:0 10px 30px rgba(0,0,0,.8)
 }
-.price{color:#4caf50;font-weight:600;margin:8px 0}
+.price{color:#4caf50;font-weight:700;margin:8px 0}
 .meta{font-size:13px;color:#aaa;margin-bottom:14px}
 
 .qr-box{
@@ -63,6 +63,17 @@ input,textarea{
   background:#111;
   color:#fff
 }
+
+.preview{
+  margin-top:10px;
+  text-align:center;
+}
+.preview img{
+  max-width:100%;
+  border-radius:10px;
+  border:1px solid #333;
+}
+
 button{
   width:100%;
   margin-top:16px;
@@ -74,6 +85,19 @@ button{
   font-size:16px;
   font-weight:600;
   cursor:pointer
+}
+
+button:disabled{
+  opacity:.6;
+  cursor:not-allowed;
+}
+
+.spinner{
+  display:none;
+  text-align:center;
+  margin-top:12px;
+  font-size:14px;
+  color:#aaa;
 }
 
 .info,.disclaimer{
@@ -103,9 +127,12 @@ button{
 
 <div class="card">
   <h2 id="title"></h2>
-  <div class="price" id="price"></div>
+
+  <div class="price" id="totalPrice"></div>
+
   <div class="meta">
-    Size: <b id="size"></b> | Quantity: <b id="qty"></b>
+    Size: <b id="size"></b> |
+    Quantity: <b id="qty"></b>
   </div>
 
   <div class="qr-box">
@@ -120,7 +147,7 @@ button{
   </div>
 
   <div class="info">
-    Complete payment and upload a screenshot below.
+    Complete payment and upload screenshot below.
   </div>
 
   <form id="orderForm">
@@ -128,8 +155,13 @@ button{
     <input name="email" type="email" placeholder="Email Address" required>
     <input name="phone" placeholder="Mobile Number" required>
     <textarea name="address" rows="3" placeholder="Complete Address" required></textarea>
-    <input type="file" name="screenshot" accept="image/*" capture="environment" required>
-    <button type="submit">I Have Paid</button>
+
+    <input type="file" name="screenshot" id="screenshot" accept="image/*" capture="environment" required>
+
+    <div class="preview" id="preview"></div>
+
+    <button id="payBtn" type="submit">I Have Paid</button>
+    <div class="spinner" id="spinner">Submitting payment… please wait</div>
   </form>
 </div>
 
@@ -148,9 +180,9 @@ button{
 <div class="footer">© 2025 STRIDE</div>
 
 <script>
-/* ===== DOM ELEMENTS (FIX) ===== */
+/* ===== ELEMENTS ===== */
 const title = document.getElementById("title");
-const priceEl = document.getElementById("price");
+const totalPriceEl = document.getElementById("totalPrice");
 const qtyEl = document.getElementById("qty");
 const sizeEl = document.getElementById("size");
 
@@ -161,41 +193,58 @@ const upiGpay = document.getElementById("upiGpay");
 const upiPhonePe = document.getElementById("upiPhonePe");
 
 const orderForm = document.getElementById("orderForm");
+const screenshotInput = document.getElementById("screenshot");
+const preview = document.getElementById("preview");
+const spinner = document.getElementById("spinner");
+const payBtn = document.getElementById("payBtn");
 
 /* ===== URL PARAMS ===== */
 const p = new URLSearchParams(location.search);
 const product = p.get("name") || "Product";
-const price = p.get("price") || "0";
-const qty = p.get("qty") || "1";
+const price = Number(p.get("price") || 0);
+const qty = Number(p.get("qty") || 1);
 const size = p.get("size") || "-";
+
+const total = price * qty;
 
 /* ===== DISPLAY ===== */
 title.innerText = product;
-priceEl.innerText = "₹" + price;
+totalPriceEl.innerText = `Total: ₹${total}`;
 qtyEl.innerText = qty;
 sizeEl.innerText = size;
 
 /* ===== UPI ===== */
 const UPI = "naveenmaan@ptyes";
 const PAYEE = "STRIDE Store";
-const upi = `upi://pay?pa=${UPI}&pn=${encodeURIComponent(PAYEE)}&am=${price}&cu=INR`;
+const upi = `upi://pay?pa=${UPI}&pn=${encodeURIComponent(PAYEE)}&am=${total}&cu=INR`;
 
-upiQR.src =
-  "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" +
-  encodeURIComponent(upi);
-
+upiQR.src = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" + encodeURIComponent(upi);
 upiLink.href = upi;
 upiAny.href = upi;
-upiGpay.href = `tez://upi/pay?pa=${UPI}&pn=${encodeURIComponent(PAYEE)}&am=${price}&cu=INR`;
-upiPhonePe.href = `phonepe://pay?pa=${UPI}&pn=${encodeURIComponent(PAYEE)}&am=${price}&cu=INR`;
+upiGpay.href = `tez://upi/pay?pa=${UPI}&pn=${encodeURIComponent(PAYEE)}&am=${total}&cu=INR`;
+upiPhonePe.href = `phonepe://pay?pa=${UPI}&pn=${encodeURIComponent(PAYEE)}&am=${total}&cu=INR`;
+
+/* ===== SCREENSHOT PREVIEW ===== */
+screenshotInput.addEventListener("change", e => {
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    preview.innerHTML = `<img src="${reader.result}">`;
+  };
+  reader.readAsDataURL(file);
+});
 
 /* ===== SUBMIT ===== */
 orderForm.addEventListener("submit", e => {
   e.preventDefault();
 
+  payBtn.disabled = true;
+  spinner.style.display = "block";
+
   const fd = new FormData(orderForm);
   fd.append("product", product);
-  fd.append("amount", price);
+  fd.append("amount", total);
   fd.append("quantity", qty);
   fd.append("size", size);
 
@@ -208,11 +257,12 @@ orderForm.addEventListener("submit", e => {
   const pdf = new jsPDF();
   pdf.text("STRIDE - Invoice", 20, 20);
   pdf.text(`Product: ${product}`, 20, 35);
-  pdf.text(`Total Paid: ₹${price}`, 20, 45);
-  pdf.text("Status: Under Verification", 20, 55);
+  pdf.text(`Quantity: ${qty}`, 20, 45);
+  pdf.text(`Total Paid: ₹${total}`, 20, 55);
+  pdf.text("Status: Under Verification", 20, 65);
   pdf.save(`STRIDE-Invoice-${Date.now()}.pdf`);
 
-  location.href = "thank-you.html";
+  setTimeout(() => location.href="thank-you.html", 1200);
 });
 </script>
 

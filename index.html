@@ -230,16 +230,24 @@ document.getElementById("orderForm").addEventListener("submit",function(e){
   const address=this.address.value;
   const txn=this.txn.value;
 
-  fetch("https://script.google.com/macros/s/AKfycbyfk1d946-gjV05aTc4wNjUxNyXZpzYB4Dru89w5MOqnUHVXJ4KudueZ0aIh0QL-ISwwA/exec",{
-    method:"POST",
-    mode:"no-cors",
-    headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({
-      name,email,phone,address,
-      product:productName,
-      amount,transaction_id:txn
-    })
-  });
+  fetch("https://script.google.com/macros/s/AKfycbyfk1d946-gjV05aTc4wNjUxNyXZpzYB4Dru89w5MOqnUHVXJ4KudueZ0aIh0QL-ISwwA/exec", {
+  method: "POST",
+  mode: "no-cors",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    name: name,
+    email: email,
+    phone: phone,
+    address: address,
+    product: productName,
+    size: "-",              // ← add if not using size yet
+    quantity: 1,            // ← default quantity
+    amount: amount,
+    transaction_id: txn,
+    status: "Pending"       // ← important
+  })
+});
+
 
   const { jsPDF } = window.jspdf;
   const pdf=new jsPDF();
@@ -257,3 +265,4 @@ document.getElementById("orderForm").addEventListener("submit",function(e){
 
 </body>
 </html>
+

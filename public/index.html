@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Secure Checkout | Sudesh Store</title>
+
+<!-- jsPDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:'Poppins',sans-serif;
+  background:#0f0f0f;
+  color:#fff;
+}
+
+/* NAVBAR */
+.navbar{
+  background:#121212;
+  padding:14px 20px;
+  box-shadow:0 2px 10px rgba(0,0,0,0.6);
+}
+.logo{font-size:20px;font-weight:600}
+.logo span{color:#ff5722}
+
+/* CONTAINER */
+.container{
+  max-width:440px;
+  margin:30px auto;
+  padding:0 15px;
+}
+
+/* CARD */
+.card{
+  background:#1c1c1c;
+  padding:22px;
+  border-radius:14px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.8);
+}
+h2{margin:0;font-size:20px}
+.price{color:#4caf50;margin:8px 0 12px;font-weight:500}
+
+/* QR */
+.qr-box{
+  border:1px dashed #333;
+  padding:16px;
+  border-radius:12px;
+  text-align:center;
+  margin-bottom:10px;
+}
+.qr-box img{max-width:260px;width:100%}
+
+/* UPI BUTTONS */
+.upi-buttons{
+  display:flex;
+  gap:10px;
+  margin:10px 0 5px;
+}
+.upi-buttons a{
+  flex:1;
+  padding:10px;
+  text-align:center;
+  border-radius:8px;
+  font-size:13px;
+  text-decoration:none;
+  color:#fff;
+  background:#2a2a2a;
+}
+.upi-buttons a:hover{background:#333}
+
+/* FORM */
+input,textarea{
+  width:100%;
+  padding:11px;
+  margin-top:10px;
+  border-radius:8px;
+  border:1px solid #333;
+  background:#111;
+  color:#fff;
+}
+textarea{resize:none}
+
+button{
+  width:100%;
+  margin-top:15px;
+  padding:12px;
+  background:linear-gradient(135deg,#ff5722,#ff784e);
+  color:#fff;
+  border:none;
+  border-radius:10px;
+  font-size:15px;
+  cursor:pointer;
+}
+button:hover{opacity:0.9}
+
+/* INFO BOX */
+.info{
+  background:#1a1a1a;
+  border-left:4px solid #4caf50;
+  padding:10px;
+  font-size:12.5px;
+  border-radius:10px;
+  color:#ccc;
+  margin-bottom:15px;
+}
+
+/* DISCLAIMER */
+.disclaimer{
+  background:#1a1a1a;
+  border-left:4px solid #ff9800;
+  padding:12px;
+  margin-top:20px;
+  font-size:12.5px;
+  border-radius:10px;
+  color:#ccc;
+}
+
+/* SUPPORT */
+.support{
+  text-align:center;
+  font-size:13px;
+  margin-top:18px;
+  color:#aaa;
+}
+.support a{color:#ff5722;text-decoration:none}
+
+/* FOOTER */
+.footer{
+  text-align:center;
+  font-size:12px;
+  color:#666;
+  margin:20px 0;
+}
+</style>
+</head>
+
+<body>
+
+<div class="navbar">
+  <div class="logo">Sudesh <span>Store</span></div>
+</div>
+
+<div class="container">
+
+  <div class="card">
+    <h2 id="title">Product</h2>
+    <div class="price" id="price"></div>
+
+    <div class="qr-box">
+      <a id="upiLink">
+        <img id="upiQR">
+      </a>
+      <p style="font-size:12px;color:#888">Tap QR or scan with your UPI app</p>
+    </div>
+
+    <!-- UPI APP BUTTONS -->
+    <div class="upi-buttons">
+      <a id="upiAny">Any UPI</a>
+      <a id="upiGpay">GPay</a>
+      <a id="upiPhonePe">PhonePe</a>
+    </div>
+
+    <div class="info">
+      If a different payment app opens, you can go back and scan the QR using your preferred UPI app (Google Pay / PhonePe / Paytm).
+    </div>
+
+    <form id="orderForm">
+      <input name="name" placeholder="Full Name" required>
+      <input name="email" type="email" placeholder="Email Address" required>
+      <input name="phone" placeholder="Mobile Number" required>
+      <textarea name="address" rows="3" placeholder="Complete Address" required></textarea>
+      <input name="txn" placeholder="UPI Transaction ID" required>
+      <button type="submit">I Have Paid</button>
+    </form>
+  </div>
+
+  <div class="disclaimer">
+    <strong>Disclaimer:</strong><br>
+    • We support all UPI apps.<br>
+    • Payment verification is manual.<br>
+    • Fake transaction IDs lead to cancellation.<br>
+    • Orders ship only after verification.
+  </div>
+
+  <div class="support">
+    Need help?  
+    <a href="mailto:naveen.maan2006@gmail.com">naveen.maan2006@gmail.com</a>
+  </div>
+
+</div>
+
+<div class="footer">
+  © 2025 Sudesh Store
+</div>
+
+<script>
+/* PRODUCT */
+const params=new URLSearchParams(window.location.search);
+const productName=params.get("name")||"Product";
+const amount=params.get("price")||"0";
+document.getElementById("title").innerText=productName;
+document.getElementById("price").innerText="₹"+amount;
+
+/* UPI */
+const UPI_ID="naveenmaan@fam";
+const PAYEE="Sudesh Store";
+const upiIntent=`upi://pay?pa=${UPI_ID}&pn=${encodeURIComponent(PAYEE)}&am=${amount}&cu=INR`;
+
+document.getElementById("upiQR").src=
+"https://api.qrserver.com/v1/create-qr-code/?size=300x300&data="+encodeURIComponent(upiIntent);
+document.getElementById("upiLink").href=upiIntent;
+
+document.getElementById("upiAny").href=upiIntent;
+document.getElementById("upiGpay").href=`tez://upi/pay?pa=${UPI_ID}&pn=${encodeURIComponent(PAYEE)}&am=${amount}&cu=INR`;
+document.getElementById("upiPhonePe").href=`phonepe://pay?pa=${UPI_ID}&pn=${encodeURIComponent(PAYEE)}&am=${amount}&cu=INR`;
+
+/* SUBMIT */
+document.getElementById("orderForm").addEventListener("submit",function(e){
+  e.preventDefault();
+
+  const name=this.name.value;
+  const email=this.email.value;
+  const phone=this.phone.value;
+  const address=this.address.value;
+  const txn=this.txn.value;
+
+  fetch("https://script.google.com/macros/s/AKfycbx0vCJVjj5xvZzBOZNeGnPCQerLe7lU8QaaggQ_BFwdjo7t_EjadVTb1jFnYvgpyFd4/exec",{
+    method:"POST",
+    mode:"no-cors",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({
+      name,email,phone,address,
+      product:productName,
+      amount,transaction_id:txn
+    })
+  });
+
+  const { jsPDF } = window.jspdf;
+  const pdf=new jsPDF();
+  pdf.text("Sudesh Store - Invoice",20,20);
+  pdf.text(`Name: ${name}`,20,35);
+  pdf.text(`Product: ${productName}`,20,45);
+  pdf.text(`Amount: ₹${amount}`,20,55);
+  pdf.text(`Transaction ID: ${txn}`,20,65);
+  pdf.text("Status: Under Verification",20,75);
+  pdf.save(`Invoice-${txn}.pdf`);
+
+  window.location.href="thank-you.html";
+});
+</script>
+
+</body>
+</html>

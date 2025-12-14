@@ -11,55 +11,40 @@
 *{box-sizing:border-box}
 body{
   margin:0;
-  font-family:Poppins, sans-serif;
+  font-family:Poppins,sans-serif;
   background:#0f0f0f;
   color:#fff;
 }
 
-/* NAVBAR */
+/* NAV */
 .navbar{
   background:#121212;
-  padding:16px 20px;
+  padding:16px;
+  text-align:center;
 }
 .logo{
-  font-size:22px;
+  font-size:24px;
   font-weight:700;
   letter-spacing:3px;
 }
 .logo span{color:#ff5722}
 
-/* CONTAINER */
+/* CARD */
 .container{
   max-width:420px;
-  margin:25px auto;
-  padding:0 14px;
+  margin:30px auto;
+  padding:0 15px;
 }
-
-/* CARD */
 .card{
   background:#1c1c1c;
-  padding:20px;
+  padding:22px;
   border-radius:16px;
-  box-shadow:0 10px 30px rgba(0,0,0,.7);
+  box-shadow:0 10px 30px rgba(0,0,0,.8);
 }
 
-/* PRODUCT */
-.product-img{
-  width:100%;
-  border-radius:14px;
-  margin-bottom:14px;
-}
-h2{margin:0 0 6px}
-.price{
-  color:#4caf50;
-  font-size:18px;
-  font-weight:600;
-}
-.meta{
-  font-size:13px;
-  color:#aaa;
-  margin-bottom:14px;
-}
+h2{margin:0}
+.price{color:#4caf50;font-size:22px;font-weight:700;margin:8px 0}
+.meta{font-size:13px;color:#aaa;margin-bottom:14px}
 
 /* QR */
 .qr-box{
@@ -67,29 +52,44 @@ h2{margin:0 0 6px}
   padding:14px;
   border-radius:12px;
   text-align:center;
-  margin-bottom:14px;
 }
 .qr-box img{max-width:240px;width:100%}
+
+/* UPI BUTTONS */
+.upi-buttons{
+  display:flex;
+  gap:10px;
+  margin:14px 0;
+}
+.upi-buttons a{
+  flex:1;
+  padding:10px;
+  background:#2a2a2a;
+  border-radius:10px;
+  text-align:center;
+  font-size:13px;
+  text-decoration:none;
+  color:#fff;
+}
+.upi-buttons a:hover{background:#333}
 
 /* FORM */
 input,textarea{
   width:100%;
-  padding:11px;
+  padding:12px;
   margin-top:10px;
-  border-radius:8px;
+  border-radius:10px;
   border:1px solid #333;
   background:#111;
   color:#fff;
 }
-textarea{resize:none}
-
 button{
   width:100%;
-  margin-top:14px;
+  margin-top:16px;
   padding:14px;
   background:linear-gradient(135deg,#ff5722,#ff784e);
   border:none;
-  border-radius:12px;
+  border-radius:14px;
   font-size:16px;
   font-weight:600;
   color:#fff;
@@ -113,89 +113,94 @@ button{
 </div>
 
 <div class="container">
-  <div class="card">
+<div class="card">
 
-    <img id="productImg" class="product-img" />
-
-    <h2 id="title"></h2>
-    <div class="price" id="price"></div>
-
-    <div class="meta">
-      Size: <b id="size"></b> |
-      Quantity: <b id="qty"></b>
-    </div>
-
-    <div class="qr-box">
-      <img id="upiQR">
-      <p style="font-size:12px;color:#888">Scan & pay using any UPI app</p>
-    </div>
-
-    <form id="orderForm">
-      <input id="name" placeholder="Full Name" required>
-      <input id="phone" placeholder="WhatsApp Number" required>
-      <textarea id="address" rows="3" placeholder="Complete Address" required></textarea>
-      <input id="txn" placeholder="UPI Transaction ID" required>
-      <button type="submit">Confirm Order</button>
-    </form>
-
+  <h2 id="title"></h2>
+  <div class="price" id="price"></div>
+  <div class="meta">
+    Size: <b id="size"></b> | Quantity: <b id="qty"></b>
   </div>
+
+  <div class="qr-box">
+    <img id="upiQR">
+    <p style="font-size:12px;color:#888">Scan or tap using any UPI app</p>
+  </div>
+
+  <!-- UPI BUTTONS -->
+  <div class="upi-buttons">
+    <a id="upiAny">Any UPI</a>
+    <a id="upiGpay">GPay</a>
+    <a id="upiPhonePe">PhonePe</a>
+    <a id="upiPaytm">Paytm</a>
+  </div>
+
+  <form id="orderForm">
+    <input name="name" placeholder="Full Name" required>
+    <input name="phone" placeholder="Phone Number" required>
+    <textarea name="address" rows="3" placeholder="Delivery Address" required></textarea>
+    <input name="txn" placeholder="UPI Transaction ID" required>
+    <button type="submit">Confirm Payment</button>
+  </form>
+
+</div>
 </div>
 
 <div class="footer">© 2025 STRIDE</div>
 
 <script>
-/* ===== GET URL DATA ===== */
+/* ===== URL PARAMS ===== */
 const p = new URLSearchParams(location.search);
-
-const product = p.get("name") || "STRIDE Product";
+const product = p.get("name") || "Product";
 const price = Number(p.get("price") || 0);
 const qty = Number(p.get("qty") || 1);
 const size = p.get("size") || "-";
-const img = p.get("img") || "https://via.placeholder.com/600";
-
 const total = price * qty;
 
-/* ===== SET UI ===== */
+/* DISPLAY */
 title.innerText = product;
-priceEl = document.getElementById("price");
 priceEl.innerText = "₹" + total;
+qtyEl.innerText = qty;
+sizeEl.innerText = size;
 
-document.getElementById("qty").innerText = qty;
-document.getElementById("size").innerText = size;
-document.getElementById("productImg").src = img;
+/* ===== UPI ===== */
+const UPI = "naveenmaan@ptyes";
+const PAYEE = "Naveen Maan";
+const upi = `upi://pay?pa=${UPI}&pn=${encodeURIComponent(PAYEE)}&am=${total}&cu=INR`;
 
-/* ===== UPI QR ===== */
-const upi = `upi://pay?pa=naveenmaan@ptyes&pn=STRIDE Store&am=${total}&cu=INR`;
-document.getElementById("upiQR").src =
+upiQR.src =
   "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" +
   encodeURIComponent(upi);
 
-/* ===== WHATSAPP SUBMIT ===== */
-document.getElementById("orderForm").addEventListener("submit", e => {
+upiAny.href = upi;
+upiGpay.href = `tez://upi/pay?pa=${UPI}&pn=${encodeURIComponent(PAYEE)}&am=${total}&cu=INR`;
+upiPhonePe.href = `phonepe://pay?pa=${UPI}&pn=${encodeURIComponent(PAYEE)}&am=${total}&cu=INR`;
+upiPaytm.href = `paytmmp://pay?pa=${UPI}&pn=${encodeURIComponent(PAYEE)}&am=${total}&cu=INR`;
+
+/* ===== SUBMIT → WHATSAPP ===== */
+orderForm.addEventListener("submit", e => {
   e.preventDefault();
 
-  const msg = `🆕 *New STRIDE Order*
+  const msg = `
+🆕 STRIDE Order
 
-👟 Product: ${product}
-📏 Size: ${size}
-📦 Quantity: ${qty}
-💰 Amount: ₹${total}
+ Product: ${product}
+ Size: ${size}
+ Quantity: ${qty}
+ Amount: ₹${total}
 
-👤 Name: ${name.value}
-📞 Phone: ${phone.value}
-🏠 Address: ${address.value}
+ Name: ${orderForm.name.value}
+Phone: ${orderForm.phone.value}
+ Address: ${orderForm.address.value}
 
-💳 Transaction ID:
-${txn.value}
+ Transaction ID:
+${orderForm.txn.value}
+`;
 
-🖼 Product Image:
-${img}`;
-
-  const whatsappURL =
+  const url =
     "https://wa.me/919467269782?text=" +
     encodeURIComponent(msg);
 
-  window.location.href = whatsappURL;
+  window.location.href = url;
 });
 </script>
 

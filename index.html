@@ -3,117 +3,228 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Secure Checkout | Sudesh Store</title>
+<title>Secure Checkout | STRIDE</title>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
-body{margin:0;font-family:Poppins;background:#0f0f0f;color:#fff}
-.navbar{background:#121212;padding:14px}
-.logo{font-size:20px;font-weight:600}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:'Poppins',sans-serif;
+  background:#0f0f0f;
+  color:#fff;
+}
+
+/* NAVBAR */
+.navbar{
+  background:#121212;
+  padding:16px 22px;
+  box-shadow:0 4px 12px rgba(0,0,0,.6);
+}
+.logo{
+  font-size:22px;
+  font-weight:700;
+  letter-spacing:2px;
+}
 .logo span{color:#ff5722}
-.container{max-width:420px;margin:30px auto;padding:0 15px}
-.card{background:#1c1c1c;padding:22px;border-radius:14px}
-.price{color:#4caf50;font-weight:600}
-.meta{font-size:13px;color:#aaa;margin-bottom:12px}
-.qr-box{text-align:center;margin:12px 0}
-.qr-box img{max-width:240px}
-input,textarea{width:100%;padding:11px;margin-top:10px;border-radius:8px;border:1px solid #333;background:#111;color:#fff}
-button{width:100%;margin-top:14px;padding:12px;border:none;border-radius:10px;background:#ff5722;color:#fff;font-size:15px}
+
+/* CONTAINER */
+.container{
+  max-width:420px;
+  margin:30px auto;
+  padding:0 15px;
+}
+
+/* CARD */
+.card{
+  background:#1c1c1c;
+  padding:24px;
+  border-radius:16px;
+  box-shadow:0 12px 30px rgba(0,0,0,.8);
+}
+h2{margin:0;font-size:22px}
+
+.price{
+  color:#4caf50;
+  font-size:20px;
+  font-weight:700;
+  margin:8px 0;
+}
+
+.meta{
+  font-size:13px;
+  color:#aaa;
+  margin-bottom:16px;
+}
+
+/* QR */
+.qr-box{
+  border:1px dashed #333;
+  border-radius:12px;
+  padding:16px;
+  text-align:center;
+  margin-bottom:16px;
+}
+.qr-box img{
+  max-width:240px;
+  width:100%;
+}
+
+/* BUTTONS */
+.upi-buttons{
+  display:flex;
+  gap:10px;
+  margin-bottom:16px;
+}
+.upi-buttons a{
+  flex:1;
+  text-align:center;
+  padding:10px;
+  border-radius:8px;
+  background:#2a2a2a;
+  color:#fff;
+  text-decoration:none;
+  font-size:13px;
+}
+.upi-buttons a:hover{background:#333}
+
+/* FORM */
+input,textarea{
+  width:100%;
+  padding:12px;
+  margin-top:10px;
+  border-radius:8px;
+  border:1px solid #333;
+  background:#111;
+  color:#fff;
+  font-size:14px;
+}
+textarea{resize:none}
+
+button{
+  width:100%;
+  margin-top:16px;
+  padding:14px;
+  border:none;
+  border-radius:12px;
+  background:linear-gradient(135deg,#ff5722,#ff784e);
+  color:#fff;
+  font-size:16px;
+  font-weight:600;
+  cursor:pointer;
+}
+button:hover{opacity:.9}
+
+/* FOOTER */
+.footer{
+  text-align:center;
+  font-size:12px;
+  color:#666;
+  margin:20px 0;
+}
 </style>
 </head>
 
 <body>
 
 <div class="navbar">
-  <div class="logo">Sudesh <span>Store</span></div>
+  <div class="logo">STR<span>IDE</span></div>
 </div>
 
 <div class="container">
-  <div class="card">
 
-    <h2 id="title"></h2>
-    <div class="price" id="price"></div>
-    <div class="meta">
-      Size: <b id="size"></b> | Quantity: <b id="qty"></b>
-    </div>
+<div class="card">
 
-    <div class="qr-box">
-      <img id="upiQR">
-      <p style="font-size:12px;color:#888">Scan with any UPI app</p>
-    </div>
-
-    <form id="orderForm">
-      <input name="name" placeholder="Full Name" required>
-      <input name="email" type="email" placeholder="Email" required>
-      <input name="phone" placeholder="Phone" required>
-      <textarea name="address" rows="3" placeholder="Address" required></textarea>
-      <input name="txn" placeholder="UPI Transaction ID" required>
-      <button type="submit">I Have Paid</button>
-    </form>
-
+  <h2 id="productName"></h2>
+  <div class="price" id="totalPrice"></div>
+  <div class="meta">
+    Size: <b id="size"></b> |
+    Quantity: <b id="qty"></b>
   </div>
+
+  <div class="qr-box">
+    <img id="upiQR">
+    <p style="font-size:12px;color:#888">Scan with any UPI app</p>
+  </div>
+
+  <div class="upi-buttons">
+    <a id="upiAny">Any UPI</a>
+    <a id="upiGpay">GPay</a>
+    <a id="upiPhonePe">PhonePe</a>
+  </div>
+
+  <form id="orderForm">
+    <input name="name" placeholder="Full Name" required>
+    <input name="phone" placeholder="Mobile Number" required>
+    <textarea name="address" rows="3" placeholder="Delivery Address" required></textarea>
+    <input name="txn" placeholder="UPI Transaction ID" required>
+    <button type="submit">I Have Paid</button>
+  </form>
+
+</div>
 </div>
 
-<script>
-const params = new URLSearchParams(location.search);
+<div class="footer">© 2025 STRIDE</div>
 
-const product = params.get("name") || "Product";
-const price = Number(params.get("price") || 0);
-const qty = Number(params.get("qty") || 1);
-const size = params.get("size") || "-";
+<script>
+/* URL PARAMS */
+const p = new URLSearchParams(location.search);
+const product = p.get("name") || "Product";
+const price = Number(p.get("price") || 0);
+const qty = Number(p.get("qty") || 1);
+const size = p.get("size") || "-";
 
 const total = price * qty;
 
-document.getElementById("title").innerText = product;
-document.getElementById("price").innerText = "₹" + total;
+/* DISPLAY */
+document.getElementById("productName").innerText = product;
+document.getElementById("totalPrice").innerText = "₹" + total;
 document.getElementById("qty").innerText = qty;
 document.getElementById("size").innerText = size;
 
-// UPI QR
-const upi = `upi://pay?pa=naveenmaan@fam&pn=Sudesh Store&am=${total}&cu=INR`;
+/* UPI */
+const UPI_ID = "naveenmaan@fam";
+const PAYEE = "STRIDE Store";
+
+const upi = `upi://pay?pa=${UPI_ID}&pn=${encodeURIComponent(PAYEE)}&am=${total}&cu=INR`;
+
 document.getElementById("upiQR").src =
   "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" + encodeURIComponent(upi);
 
-// Submit
+document.getElementById("upiAny").href = upi;
+document.getElementById("upiGpay").href =
+  `tez://upi/pay?pa=${UPI_ID}&pn=${encodeURIComponent(PAYEE)}&am=${total}&cu=INR`;
+document.getElementById("upiPhonePe").href =
+  `phonepe://pay?pa=${UPI_ID}&pn=${encodeURIComponent(PAYEE)}&am=${total}&cu=INR`;
+
+/* SUBMIT → WHATSAPP */
 document.getElementById("orderForm").addEventListener("submit", e => {
   e.preventDefault();
-
   const f = e.target;
 
-document.getElementById("orderForm").addEventListener("submit", e => {
-  e.preventDefault();
+  const message = `
+🛍️ *New STRIDE Order*
 
-  const f = e.target;
+👟 Product: ${product}
+📏 Size: ${size}
+🔢 Quantity: ${qty}
+💰 Amount: ₹${total}
 
-  fetch("https://script.google.com/macros/s/AKfycbyp1o13xA9wGaVM84l08583or_QtsGY3jGm8BmQLq7-aXM8sPrWtJYCw5xScyAI8mRf/exec", {
-    method: "POST",
-    mode: "no-cors",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      name: f.name.value,
-      email: f.email.value,
-      phone: f.phone.value,
-      address: f.address.value,
-      product: product,
-      size: size,
-      quantity: qty,
-      amount: total,
-      transaction_id: f.txn.value
-    })
-  });
+👤 Name: ${f.name.value}
+📞 Phone: ${f.phone.value}
+🏠 Address: ${f.address.value}
 
-  alert("Payment submitted successfully. You will receive confirmation email.");
-});
+💳 Transaction ID:
+${f.txn.value}
+`;
 
+  const whatsappURL =
+    "https://wa.me/919467269782?text=" + encodeURIComponent(message);
 
-  alert("Payment submitted. You will receive email confirmation.");
+  window.location.href = whatsappURL;
 });
 </script>
 
 </body>
 </html>
-

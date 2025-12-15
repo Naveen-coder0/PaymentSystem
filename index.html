@@ -214,7 +214,7 @@ const product = p.get("name") || "Product";
 const price = Number(p.get("price") || 0);
 const qty = Number(p.get("qty") || 1);
 const size = p.get("size") || "-";
-const total = price * qty;
+const total = price;
 
 /* DISPLAY */
 titleEl.innerText = product;
@@ -265,3 +265,4 @@ ${orderForm.txn.value}
 
 </body>
 </html>
+
